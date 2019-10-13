@@ -699,6 +699,12 @@ int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
                 }
                 state->hand[currentPlayer][state->handCount[currentPlayer]] = -1;
                 state->handCount[currentPlayer]--;   //decrement handcount
+
+
+                //add card to played pile
+                state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos];
+                state->playedCardCount++;
+
                 card_discarded = 1;//Exit the loop
             }
             else if (p > state->handCount[currentPlayer]) {   //Reached end of players hand and did not find an Estate card
@@ -1285,22 +1291,16 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
     return -1;
 }
 
-int discardCard(int handPos, int currentPlayer, struct gameState *state, int trashFlag)
+int discardCard(int handPos, int currentPlayer, struct gameState *state)
 {
-
-    //if card is not trashed, added to Played pile
-    if (trashFlag < 1)
-    {
-        //add card to played pile
-        state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos];
-        state->playedCardCount++;
-    }
-
+    state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][handPos]; //Add card at handPos to players discard pile
+    state->discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
+    
     //set played card to -1
     state->hand[currentPlayer][handPos] = -1;
 
     //remove card from player's hand
-    if ( handPos == (state->handCount[currentPlayer] - 1) ) 	//last card in hand array is played
+    if ( handPos == (state->handCount[currentPlayer] - 1) )     //last card in hand array is played
     {
         //reduce number of cards in hand
         state->handCount[currentPlayer]--;
@@ -1322,6 +1322,18 @@ int discardCard(int handPos, int currentPlayer, struct gameState *state, int tra
 
     return 0;
 }
+
+
+
+
+int trashCard(int handPos, int currentPlayer, struct gameState *state)
+{
+
+}
+
+
+
+
 
 int gainCard(int supplyPos, struct gameState *state, int toFlag, int player)
 {
