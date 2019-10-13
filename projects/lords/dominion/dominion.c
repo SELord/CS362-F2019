@@ -752,19 +752,20 @@ int minion(int choice1, int choice2, struct gameState *state, int currentPlayer,
     //+1 action
     state->numActions++;
 
-    //discard card from hand
-    discardCard(handPos, currentPlayer, state, 0);
 
-    if (choice1)
+    if (choice1)  //player chooses to get 2 additional coins this turn
     {
-        state->coins = state->coins + 2;
+        *bonus += 2;
+        
+        //discard card from hand
+        discardCard(handPos, currentPlayer, state);
     }
     else if (choice2)       //discard hand, redraw 4, other players with 5+ cards discard hand and draw 4
     {
         //discard hand
         while(numHandCards(state) > 0)
         {
-            discardCard(handPos, currentPlayer, state, 0);
+            discardCard(handPos, currentPlayer, state);
         }
 
         //draw 4
@@ -783,7 +784,7 @@ int minion(int choice1, int choice2, struct gameState *state, int currentPlayer,
                     //discard hand
                     while( state->handCount[i] > 0 )
                     {
-                        discardCard(handPos, i, state, 0);
+                        discardCard(handPos, i, state);
                     }
 
                     //draw 4
