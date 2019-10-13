@@ -692,20 +692,21 @@ int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
         while(card_discarded == 0) {   //loop until card is discarded
             if (state->hand[currentPlayer][p] == estate) { //Found an estate card
                 *bonus += 4;//Add 4 coins to the bonus variable 
-                state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][p]; //Add this Estate card to players discard pile
-                state->discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
-                for (; p < state->handCount[currentPlayer]; p++) {   //loop from where p is right now to the end of the hand
-                    state->hand[currentPlayer][p] = state->hand[currentPlayer][p+1];   //move cards down to fill gap from discarded Estate
-                }
-                state->hand[currentPlayer][state->handCount[currentPlayer]] = -1;
-                state->handCount[currentPlayer]--;   //decrement handcount
-
 
                 //add card to played pile
                 state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos];
                 state->playedCardCount++;
 
-                card_discarded = 1;//Exit the loop
+                if(discardCard(p, currentPlayer, state) == 0)
+                {
+                    card_discarded = 1;//Exit the loop
+                }
+                else
+                {
+                    printf("Error discarding card\n");
+                    return 1;
+                }
+                
             }
             else if (p > state->handCount[currentPlayer]) {   //Reached end of players hand and did not find an Estate card
                 if(DEBUG) {
