@@ -583,7 +583,7 @@ int drawCard(int player, struct gameState *state)
             printf("Deck count now: %d\n", state->deckCount[player]);
         }
 
-        state->discardCount[player] = 0;
+        
 
         //Step 2 Draw Card
         count = state->handCount[player];//Get current player's hand count
@@ -597,14 +597,13 @@ int drawCard(int player, struct gameState *state)
         if (deckCounter == 0)
             return -1;
 
-        state->hand[player][count] = state->deck[player][deckCounter - 1];//Add card to hand
-        state->deckCount[player]--;
-        state->handCount[player]++;//Increment hand count
+        state->hand[player][count] = state->deck[player][deckCounter - 1];//Add card to end of hand
+        state->deckCount[player]--;  //Decrement deck count
+        state->handCount[player]++;  //Increment hand count
     }
 
     else {
         int count = state->handCount[player];//Get current hand count for player
-        int deckCounter;
         if (DEBUG) { //Debug statements
             printf("Current hand count: %d\n", count);
         }
@@ -869,12 +868,12 @@ int ambassador(int choice1, int choice2, struct gameState *state, int currentPla
 
 int tribute(struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards)
 {
-    if ((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) <= 1) {
-        if (state->deckCount[nextPlayer] > 0) {
+    if ((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) <= 1) {   //check that next player has at least 2 cards to be discarded 
+        if (state->deckCount[nextPlayer] > 0) {  //check deckCount
             tributeRevealedCards[0] = state->deck[nextPlayer][state->deckCount[nextPlayer]-1];
             state->deckCount[nextPlayer]--;
         }
-        else if (state->discardCount[nextPlayer] > 0) {
+        else if (state->discardCount[nextPlayer] > 0) {  //check discardCount
             tributeRevealedCards[0] = state->discard[nextPlayer][state->discardCount[nextPlayer]-1];
             state->discardCount[nextPlayer]--;
         }
@@ -887,7 +886,7 @@ int tribute(struct gameState *state, int currentPlayer, int nextPlayer, int *tri
     }
 
     else {
-        if (state->deckCount[nextPlayer] == 0) {
+        if (state->deckCount[nextPlayer] == 0) {  //no cards in deck, take discard pile and move to deck
             for (i = 0; i < state->discardCount[nextPlayer]; i++) {
                 state->deck[nextPlayer][i] = state->discard[nextPlayer][i];//Move to deck
                 state->deckCount[nextPlayer]++;
@@ -897,8 +896,8 @@ int tribute(struct gameState *state, int currentPlayer, int nextPlayer, int *tri
 
             shuffle(nextPlayer,state);//Shuffle the deck
         }
-        tributeRevealedCards[0] = state->deck[nextPlayer][state->deckCount[nextPlayer]-1];
-        state->deck[nextPlayer][state->deckCount[nextPlayer]--] = -1;
+        tributeRevealedCards[0] = state->deck[nextPlayer][state->deckCount[nextPlayer]-1];  //store card from end of deck in the tribute revealed pile
+        discardCard(handps, nextPlayer, state);
         state->deckCount[nextPlayer]--;
         tributeRevealedCards[1] = state->deck[nextPlayer][state->deckCount[nextPlayer]-1];
         state->deck[nextPlayer][state->deckCount[nextPlayer]--] = -1;
