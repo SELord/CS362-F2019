@@ -808,60 +808,60 @@ int ambassador(int choice1, int choice2, struct gameState *state, int currentPla
 {
     j = 0;      //used to check if player has enough cards to discard
 
-        if (choice2 > 2 || choice2 < 0)
-        {
-            return -1;
-        }
+    if (choice2 > 2 || choice2 < 0)   //choice is the number of cards to return to the supply. can't be more than 2 or less than 0
+    {
+        return -1;
+    }
 
-        if (choice1 == handPos)
-        {
-            return -1;
-        }
+    if (choice1 == handPos)  //Not able to return this ambassador card to supply
+    {
+        return -1;
+    }
 
+    for (i = 0; i < state->handCount[currentPlayer]; i++)   //for each card in hand
+    {
+        if (i != handPos && state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1])  //check it matches choice1 card, but is not current handPos
+        {
+            j++;
+        }
+    }
+    if (j < choice2)  //Check that we actually have enough cards to remove
+    {
+        return -1;
+    }
+
+    if (DEBUG)
+        printf("Player %d reveals card number: %d\n", currentPlayer, state->hand[currentPlayer][choice1]);
+
+    //increase supply count for choosen card by amount being discarded
+    state->supplyCount[state->hand[currentPlayer][choice1]] += choice2;
+
+    //each other player gains a copy of revealed card
+    for (i = 0; i < state->numPlayers; i++)
+    {
+        if (i != currentPlayer)
+        {
+            gainCard(state->hand[currentPlayer][choice1], state, 1, i);
+        }
+    }
+
+    //discard played Ambassador card from hand
+    discardCard(handPos, currentPlayer, state);
+
+    //trash copies of cards returned to supply
+    for (j = 0; j < choice2; j++)
+    {
         for (i = 0; i < state->handCount[currentPlayer]; i++)
         {
-            if (i != handPos && i == state->hand[currentPlayer][choice1] && i != choice1)
+            if (state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1])
             {
-                j++;
+                trashCard(i, currentPlayer, state);
+                break;
             }
         }
-        if (j < choice2)
-        {
-            return -1;
-        }
+    }
 
-        if (DEBUG)
-            printf("Player %d reveals card number: %d\n", currentPlayer, state->hand[currentPlayer][choice1]);
-
-        //increase supply count for choosen card by amount being discarded
-        state->supplyCount[state->hand[currentPlayer][choice1]] += choice2;
-
-        //each other player gains a copy of revealed card
-        for (i = 0; i < state->numPlayers; i++)
-        {
-            if (i != currentPlayer)
-            {
-                gainCard(state->hand[currentPlayer][choice1], state, 0, i);
-            }
-        }
-
-        //discard played card from hand
-        discardCard(handPos, currentPlayer, state, 0);
-
-        //trash copies of cards returned to supply
-        for (j = 0; j < choice2; j++)
-        {
-            for (i = 0; i < state->handCount[currentPlayer]; i++)
-            {
-                if (state->hand[currentPlayer][i] == state->hand[currentPlayer][choice1])
-                {
-                    discardCard(i, currentPlayer, state, 1);
-                    break;
-                }
-            }
-        }
-
-        return 0;
+    return 0;
 }
 
 
