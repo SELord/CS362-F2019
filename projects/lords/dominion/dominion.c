@@ -804,7 +804,7 @@ int minion(int choice1, int choice2, struct gameState *state, int currentPlayer,
 
 
 
-int ambassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus)
+int ambassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos)
 {
     j = 0;      //used to check if player has enough cards to discard
 
@@ -1184,7 +1184,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 
     case ambassador:
-        ambassador();
+        ambassador(choice1, choice2, state, currentPlayer, handPos);
         break;
 
 
