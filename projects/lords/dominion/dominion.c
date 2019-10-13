@@ -681,38 +681,40 @@ int getCost(int cardNumber)
     return -1;
 }
 
-int baron(int choice1, struct gameState *state, int handPos)
+
+
+int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
 {
-    state->numBuys++;//Increase buys by 1!
-    if (choice1 > 0) { //Boolean true or going to discard an estate
-        int p = 0;//Iterator for hand!
-        int card_not_discarded = 1;//Flag for discard set!
-        while(card_not_discarded) {
-            if (state->hand[currentPlayer][p] == estate) { //Found an estate card!
-                state->coins += 4;//Add 4 coins to the amount of coins
-                state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][p];
-                state->discardCount[currentPlayer]++;
-                for (; p < state->handCount[currentPlayer]; p++) {
-                    state->hand[currentPlayer][p] = state->hand[currentPlayer][p+1];
+    state->numBuys++;//Increment number of buys for this turn
+    if (choice1 > 0) { //Player chooses to discard an Estate
+        int p = 0; //Iterator for hand
+        int card_discarded = 0;  //Flag for discard. Instantiate to false
+        while(card_discarded == 0) {   //loop until card is discarded
+            if (state->hand[currentPlayer][p] == estate) { //Found an estate card
+                *bonus += 4;//Add 4 coins to the bonus variable 
+                state->discard[currentPlayer][state->discardCount[currentPlayer]] = state->hand[currentPlayer][p]; //Add this Estate card to players discard pile
+                state->discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
+                for (; p < state->handCount[currentPlayer]; p++) {   //loop from where p is right now to the end of the hand
+                    state->hand[currentPlayer][p] = state->hand[currentPlayer][p+1];   //move cards down to fill gap from discarded Estate
                 }
                 state->hand[currentPlayer][state->handCount[currentPlayer]] = -1;
-                state->handCount[currentPlayer]--;
-                card_not_discarded = 0;//Exit the loop
+                state->handCount[currentPlayer]--;   //decrement handcount
+                card_discarded = 1;//Exit the loop
             }
-            else if (p > state->handCount[currentPlayer]) {
+            else if (p > state->handCount[currentPlayer]) {   //Reached end of players hand and did not find an Estate card
                 if(DEBUG) {
                     printf("No estate cards in your hand, invalid choice\n");
                     printf("Must gain an estate if there are any\n");
                 }
-                if (supplyCount(estate, state) > 0) {
-                    gainCard(estate, state, 0, currentPlayer);
+                if (supplyCount(estate, state) > 0) {    //If there are Estates available in the game, give one to the current player
+                    gainCard(estate, state, 1, currentPlayer);
 
                     state->supplyCount[estate]--;//Decrement estates
                     if (supplyCount(estate, state) == 0) {
                         isGameOver(state);
                     }
                 }
-                card_not_discarded = 0;//Exit the loop
+                card_discarded = 1;//Exit the loop
             }
 
             else {
@@ -721,17 +723,16 @@ int baron(int choice1, struct gameState *state, int handPos)
         }
     }
 
-    else {
+    else {  //player will not discard an Estate
         if (supplyCount(estate, state) > 0) {
-            gainCard(estate, state, 0, currentPlayer);//Gain an estate
+            gainCard(estate, state, 1, currentPlayer);  //Gain an estate to deck
 
             state->supplyCount[estate]--;//Decrement Estates
             if (supplyCount(estate, state) == 0) {
-                isGameOver(state);
+                isGameOver(state);    //Estate pile is empty, check if game should be over
             }
         }
     }
-
 
     return 0;
 }
@@ -948,7 +949,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         return 0;
 
     case baron:
-        baron(choice1, state, handPos);
+        baron(choice1, state, currentPlayer, bonus);
         break;
 
     case great_hall:
