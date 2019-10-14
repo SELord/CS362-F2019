@@ -744,6 +744,7 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
 
 int playMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus)
 {
+    int i;
     //+1 action
     state->numActions++;
 
@@ -801,7 +802,8 @@ int playMinion(int choice1, int choice2, struct gameState *state, int currentPla
 
 int playAmbassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos)
 {
-    j = 0;      //used to check if player has enough cards to discard
+    int i;
+    int j = 0;      //used to check if player has enough cards to discard
 
     if (choice2 > 2 || choice2 < 0)   //choice is the number of cards to return to the supply. can't be more than 2 or less than 0
     {
@@ -864,6 +866,7 @@ int playAmbassador(int choice1, int choice2, struct gameState *state, int curren
 
 int playTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus)
 {
+    int i;
     //check if player has any cards in their deck and/or discard pile
     if((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) == 0)
     {
@@ -935,6 +938,7 @@ int playTribute(int handPos, struct gameState *state, int currentPlayer, int nex
 
 int playMine(int choice1, int choice2, int handPos, struct gameState *state, int currentPlayer)
 {
+    int i;
     int j = state->hand[currentPlayer][choice1];  //store card we will trash
 
     // Make sure choice1 card to trash is a treasure card
