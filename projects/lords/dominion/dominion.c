@@ -745,6 +745,7 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
 int playMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus)
 {
     int i;
+    int j;
     //+1 action
     state->numActions++;
 
@@ -1204,7 +1205,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 
     case tribute:
-        playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards);
+        playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards, bonus);
         break;
 
 
