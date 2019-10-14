@@ -709,7 +709,7 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
                     printf("Must gain an estate if there are any\n");
                 }
                 if (supplyCount(estate, state) > 0) {    //If there are Estates available in the game, give one to the current player
-                    gainCard(estate, state, 1, currentPlayer);
+                    gainCard(estate, state, 2, currentPlayer);
 
                     state->supplyCount[estate]--;//Decrement estates
                     if (supplyCount(estate, state) == 0) {
@@ -720,7 +720,7 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
             }
 
             else {
-                p++;//Next card
+                p += 2;//Next card
             }
         }
     }
@@ -762,11 +762,11 @@ int playMinion(int choice1, int choice2, struct gameState *state, int currentPla
         //discard hand
         while(numHandCards(state) > 0)
         {
-            discardCard(handPos, currentPlayer, state);
+            discardCard(0, currentPlayer, state);
         }
 
         //draw 4
-        for (i = 0; i < 4; i++)
+        for (i = 0; i <= 4; i++)
         {
             drawCard(currentPlayer, state);
         }
@@ -779,9 +779,9 @@ int playMinion(int choice1, int choice2, struct gameState *state, int currentPla
                 if ( state->handCount[i] > 4 )
                 {
                     //discard hand
-                    while( state->handCount[i] > 0 )
+                    while( state->handCount[i] > 1 )
                     {
-                        discardCard(handPos, i, state);
+                        discardCard(0, i, state);
                     }
 
                     //draw 4
@@ -811,10 +811,10 @@ int playAmbassador(int choice1, int choice2, struct gameState *state, int curren
         return -1;
     }
 
-    if (choice1 == handPos)  //Not able to return this ambassador card to supply
-    {
-        return -1;
-    }
+    //if (choice1 == handPos)  //Not able to return this ambassador card to supply
+    //{
+        //return -1;
+    //}
 
     for (i = 0; i < state->handCount[currentPlayer]; i++)   //for each card in hand
     {
@@ -844,7 +844,7 @@ int playAmbassador(int choice1, int choice2, struct gameState *state, int curren
     }
 
     //discard played Ambassador card from hand
-    discardCard(handPos, currentPlayer, state);
+    discardCard(2, currentPlayer, state);
 
     //trash copies of cards returned to supply
     for (j = 0; j < choice2; j++)
@@ -904,12 +904,12 @@ int playTribute(int handPos, struct gameState *state, int currentPlayer, int nex
             drawCard(currentPlayer, state);
         }
         else { //Action Card
-            state->numActions += 2;
+            state->numActions *= 2;
         }
     }
     else if(tributeRevealedCards[0] != tributeRevealedCards[1]) //tribute cards are not duplicate so gain rewards twice
     {
-        for (i = 0; i <= 2; i ++) {
+        for (i = 0; i < 2; i ++) {
             if (tributeRevealedCards[i] == copper || tributeRevealedCards[i] == silver || tributeRevealedCards[i] == gold) 
             { //Treasure cards
                 *bonus += 2;
@@ -950,7 +950,7 @@ int playMine(int choice1, int choice2, int handPos, struct gameState *state, int
     // Make sure choice2 card to gain is a treasure card
     if (choice2 < copper || choice2 > gold)
     {
-        return -1;
+        return 0;
     }
     // Make sure choice2 card to gain does not cost more than 3 coins more than choice1 card 
     if ( (getCost(state->hand[currentPlayer][choice1]) + 3) > getCost(choice2) )
@@ -970,7 +970,6 @@ int playMine(int choice1, int choice2, int handPos, struct gameState *state, int
         if (state->hand[currentPlayer][i] == j)
         {
             trashCard(i, currentPlayer, state);
-            break;
         }
     }
 
