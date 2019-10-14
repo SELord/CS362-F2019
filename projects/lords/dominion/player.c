@@ -22,7 +22,7 @@
 
 int main2(int argc, char *argv[]) {
     //Default cards, as defined in playDom
-    int k[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy};
+    int k[10] = {adventurer, gardens, baron, village, minion, mine, cutpurse, ambassador, tribute, smithy};
     struct gameState g;
     initializeGame(2,k,1,&g);
     printf ("SUCCESSFUL INIT\n");
@@ -63,7 +63,7 @@ int main(int argc, char* argv[]) {
     int randomSeed = atoi(argv[1]);
 
     //Default cards, as defined in playDom
-    int kCards[10] = {adventurer, gardens, embargo, village, minion, mine, cutpurse, sea_hag, tribute, smithy};
+    int kCards[10] = {adventurer, gardens, baron, village, minion, mine, cutpurse, ambassador, tribute, smithy};
 
     struct gameState g;
     struct gameState * game = &g;
