@@ -682,7 +682,7 @@ int getCost(int cardNumber)
 
 
 
-int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
+int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
 {
     state->numBuys++;//Increment number of buys for this turn
     if (choice1 > 0) { //Player chooses to discard an Estate
@@ -691,10 +691,6 @@ int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
         while(card_discarded == 0) {   //loop until card is discarded
             if (state->hand[currentPlayer][p] == estate) { //Found an estate card
                 *bonus += 4;//Add 4 coins to the bonus variable 
-
-                //add card to played pile
-                state->playedCards[state->playedCardCount] = state->hand[currentPlayer][handPos];
-                state->playedCardCount++;
 
                 if(discardCard(p, currentPlayer, state) == 0)
                 {
@@ -746,7 +742,7 @@ int baron(int choice1, struct gameState *state, int currentPlayer, int *bonus)
 
 
 
-int minion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus)
+int playMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus)
 {
     //+1 action
     state->numActions++;
@@ -803,7 +799,7 @@ int minion(int choice1, int choice2, struct gameState *state, int currentPlayer,
 
 
 
-int ambassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos)
+int playAmbassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos)
 {
     j = 0;      //used to check if player has enough cards to discard
 
@@ -866,7 +862,7 @@ int ambassador(int choice1, int choice2, struct gameState *state, int currentPla
 
 
 
-int tribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus)
+int playTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus)
 {
     //check if player has any cards in their deck and/or discard pile
     if((state->discardCount[nextPlayer] + state->deckCount[nextPlayer]) == 0)
@@ -937,7 +933,7 @@ int tribute(int handPos, struct gameState *state, int currentPlayer, int nextPla
 
 
 
-int mine(int choice1, int choice2, int handPos, struct gameState *state, int currentPlayer)
+int playMine(int choice1, int choice2, int handPos, struct gameState *state, int currentPlayer)
 {
     int j = state->hand[currentPlayer][choice1];  //store card we will trash
 
@@ -1109,7 +1105,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         return -1;
 
     case mine:
-        mine(choice1, choice2, handPos, state, currentPlayer);
+        playMine(choice1, choice2, handPos, state, currentPlayer);
         break;
 
     case remodel:
@@ -1161,7 +1157,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         return 0;
 
     case baron:
-        baron(choice1, state, currentPlayer, bonus);
+        playBaron(choice1, state, currentPlayer, bonus);
         break;
 
     case great_hall:
@@ -1176,7 +1172,7 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
         return 0;
 
     case minion:
-        minion(choice1, choice2, state, currentPlayer, handPos, bonus);
+        playMinion(choice1, choice2, state, currentPlayer, handPos, bonus);
         break;
 
     case steward:
@@ -1204,12 +1200,12 @@ int cardEffect(int card, int choice1, int choice2, int choice3, struct gameState
 
 
     case tribute:
-        tribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards);
+        playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards);
         break;
 
 
     case ambassador:
-        ambassador(choice1, choice2, state, currentPlayer, handPos);
+        playAmbassador(choice1, choice2, state, currentPlayer, handPos);
         break;
 
 
