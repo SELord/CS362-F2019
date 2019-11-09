@@ -721,13 +721,14 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
 
             else {
                 p += 2;//Next card
+                //p++;
             }
         }
     }
 
     else {  //player will not discard an Estate
         if (supplyCount(estate, state) > 0) {
-            gainCard(estate, state, 1, currentPlayer);  //Gain an estate to deck
+            gainCard(estate, state, 1, currentPlayer);  //Gain an estate to discard pile
 
             state->supplyCount[estate]--;//Decrement Estates
             if (supplyCount(estate, state) == 0) {

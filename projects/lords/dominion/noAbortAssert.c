@@ -12,15 +12,20 @@ Steven Lord CS362
 
 int noAbortAssert(const void* obj1, const void* obj2, int n){
 
-  int value = memcmp(obj1, obj2, n);
+    //printf("obj1: %d\n", *(int*)obj1);
+    //printf("obj2: %d\n", *(int*)obj2);
+    //printf("n:  %d\n", n);
+   
+    int value = memcmp(obj1, obj2, n);
 
-  if (value == 0){
-    printf("Call to noAbortAssert:    PASS\n");
-  }
-  else if(value != 0){
-    printf("Call to noAbortAssert:    FAIL\n");
-  }
 
-  return 0;
+    if (value == 0){
+        printf("Call to noAbortAssert:                PASS\n");
+    }
+    else if(value != 0){
+        printf("Call to noAbortAssert:                FAIL\n");
+    }
+
+    return 0;
 
 }

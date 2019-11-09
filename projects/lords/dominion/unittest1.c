@@ -35,9 +35,11 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonu
 
 
 	int r = playBaron(choice1, state, currentPlayer, &bonus);
+    int *ptrR = &r;
 
 
     control.numBuys++;
+
 
     if(choice1 >0){
     	int estateFlag = 0;
@@ -73,9 +75,22 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonu
     }
 
 
-    noAbortAssert(&r, 0, sizeof(int));
+    int zero = 0;
+    int * ptrZero = &zero;
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check for bonus increase\n");
     noAbortAssert(&controlBonus, &bonus, sizeof(int));
+
+    printf("Check that discardCount has been changed\n");
     noAbortAssert(&control.discardCount[currentPlayer], &state->discardCount[currentPlayer], sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[currentPlayer][ control.discardCount[currentPlayer] ], &state->discard[currentPlayer][state->discardCount[currentPlayer]], sizeof(int));
+
+    printf("Check that handCount has been changed\n");
     noAbortAssert(&control.handCount[currentPlayer], &state->handCount[currentPlayer], sizeof(int));
 
 
@@ -84,36 +99,82 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonu
 
 
 int main(){
-	int choice1, p, bonus;
-	struct gameState G;
+	int choice1;
+    int numPlayers = 2;
+    int p = 0;
+    int bonus = 0;
+    int seed = 1000;
+	struct gameState G, testState;
 
-    p = 0;
+    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+
+    //initialize the game state
+    initializeGame(numPlayers, k, seed, &G);
+
+
+    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- playBaron Test Suite -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
+
+    printf("\n\n*****    TEST 1: choice1 == 1, estate in hand    *****\n");
+
     choice1 = 1;
-    bonus = 0;
-    G.numBuys = 1;
-    G.hand[0][0] = copper;
-    G.hand[0][1] = baron;
-    G.hand[0][2] = copper;
-    G.hand[0][3] = estate;
-    G.hand[0][4] = copper;
 
-    G.handCount[0] = 5;
+    memcpy(&testState, &G, sizeof(struct gameState));
 
-    G.discardCount[0] = 0;
+    //testState.hand[0][0] = baron;
+    testState.hand[0][0] = estate;
 
-    G.supplyCount[baron] = 10;
+    checkBaron(choice1, &testState, p, bonus);
 
-    G.deck[0][0] = silver;
-    G.deck[0][1] = copper;
 
-    G.deckCount[0] = 2;
-    
 
-    printf ("Testing playBaron.\n");
 
-    checkBaron(choice1, &G, p, bonus);
 
-    printf ("****  TEST COMPLETE  ****\n");
+    printf("\n\n*****    TEST 2: choice1 == 1, estate in hand, check for bad iterator    *****\n");
+
+    choice1 = 1;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = baron;
+    testState.hand[0][1] = estate;
+    testState.hand[0][2] = copper;
+    testState.hand[0][3] = copper;
+    testState.hand[0][4] = copper;
+
+    checkBaron(choice1, &testState, p, bonus);
+
+
+
+
+
+    printf("\n\n*****    TEST 3: choice1 == 1, estate NOT in hand    *****\n");
+
+    choice1 = 1;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = baron;
+    testState.hand[0][1] = copper;
+    testState.hand[0][2] = copper;
+    testState.hand[0][3] = copper;
+    testState.hand[0][4] = copper;
+
+    checkBaron(choice1, &testState, p, bonus);
+
+
+
+
+
+    printf("\n\n*****    TEST 4: choice1 == 0    *****\n");
+
+    choice1 = 0;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = baron;
+    testState.hand[0][1] = estate;
+
+    checkBaron(choice1, &testState, p, bonus);
 
 	
 

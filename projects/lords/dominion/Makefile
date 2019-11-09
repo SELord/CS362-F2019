@@ -13,7 +13,7 @@ playdom: playdom.c dominion.o
 noAbortAssert.o: noAbortAssert.c noAbortAssert.h
 	gcc -c noAbortAssert.c -g $(CFLAGS)
 
-unittest1: unittest1.c dominion.o rngs.o
+unittest1: unittest1.c dominion.o noAbortAssert.o rngs.o
 	gcc  -o unittest1 -g  unittest1.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
 interface.o: interface.c interface.h
@@ -22,7 +22,8 @@ interface.o: interface.c interface.h
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom player unittest1
+all: playdom unittest1 player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1
+	rm -r playdom.dSYM player.dSYM unittest1.dSYM
