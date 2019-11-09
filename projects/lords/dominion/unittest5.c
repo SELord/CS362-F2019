@@ -1,5 +1,5 @@
 /*****************************************************************************
-**    Unit test file for the ambassador card function in dominion.c
+**    Unit test file for the mine card function in dominion.c
 *****************************************************************************/
 #include "dominion.h"
 #include "dominion_helpers.h"
@@ -10,12 +10,7 @@
 
 
 /*  
-
-    Ambassador Card text: 
-    Reveal a card from your hand. Return up to 2 copies of it from your hand to the Supply.
-    Then each other player gains a copy of it.
-
-    Pre-conditions necessary for Ambassador to play:
+    Pre-conditions necessary for Mine to play:
 
     First arg = 
     Second arg = 
@@ -24,7 +19,7 @@
 
 */
 
-int checkAmbassador(int choice1, struct gameState *state, int currentPlayer, int bonus){
+int checkMine(int choice1, struct gameState *state, int currentPlayer, int bonus){
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
