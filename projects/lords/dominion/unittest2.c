@@ -71,7 +71,7 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
             if ( control.handCount[otherPlayer] > 4 )
             {
                 //discard hand
-                while( control.handCount[otherPlayer] > 1 )
+                while( control.handCount[otherPlayer] > 0 )
                 {
                     control.discard[otherPlayer][control.discardCount[otherPlayer]] = control.hand[otherPlayer][0];
                     control.discardCount[otherPlayer]++;  //increment the count of cards in players discard pile
@@ -104,19 +104,16 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
     noAbortAssert(&controlBonus, &bonus, sizeof(int));
 
 
-    int playerNumber = 0;
     int i;
     for(i = 0; i < state->numPlayers; i++){
-        printf("Check player #%d handCount\n", playerNumber);
+        printf("Check player #%d handCount\n", i);
         noAbortAssert(&control.handCount[i], &state->handCount[i], sizeof(int));
 
-        printf("Check player #%d deckCount\n", playerNumber);
+        printf("Check player #%d deckCount\n", i);
         noAbortAssert(&control.deckCount[i], &state->deckCount[i], sizeof(int));
 
-        printf("Check player #%d discardCount\n", playerNumber);
+        printf("Check player #%d discardCount\n", i);
         noAbortAssert(&control.discardCount[i], &state->discardCount[i], sizeof(int));
-
-        playerNumber++;
     }
 
 
