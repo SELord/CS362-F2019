@@ -16,14 +16,17 @@ noAbortAssert.o: noAbortAssert.c noAbortAssert.h
 unittest1: unittest1.c dominion.o noAbortAssert.o rngs.o
 	gcc  -o unittest1 -g  unittest1.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
+unittest2: unittest2.c dominion.o noAbortAssert.o rngs.o
+	gcc  -o unittest2 -g  unittest2.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
+
 interface.o: interface.c interface.h
 	gcc -c interface.c -g  $(CFLAGS)
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom unittest1 player 
+all: playdom unittest1 unittest2 player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1
-	rm -r playdom.dSYM player.dSYM unittest1.dSYM
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1 unittest2
+	rm -r playdom.dSYM player.dSYM unittest1.dSYM unittest2.dSYM

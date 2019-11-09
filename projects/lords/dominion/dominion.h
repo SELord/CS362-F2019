@@ -130,4 +130,7 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 
 int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonus);
 
+int playMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus);
+
+
 #endif
