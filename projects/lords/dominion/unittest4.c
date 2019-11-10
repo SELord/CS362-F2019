@@ -23,43 +23,6 @@
 
 */
 
-int checkTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus){
-	struct gameState control;
-	memcpy (&control, state, sizeof(struct gameState));
-
-	int controlBonus;
-    memcpy(&controlBonus, bonus, sizeof(int));
-
-    int controlRevealedCards[2] = {-1, -1};
-
-
-	int r = playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards, bonus);
-    int *ptrR = &r;
-
-
-
-
-    int zero = 0;
-    int * ptrZero = &zero;
-
-    printf("Check for return 0\n");
-    noAbortAssert(ptrR, ptrZero, sizeof(int));
-
-    printf("Check for bonus increase\n");
-    noAbortAssert(&controlBonus, &bonus, sizeof(int));
-
-    printf("Check that discardCount has been changed\n");
-    noAbortAssert(&control.discardCount[currentPlayer], &state->discardCount[currentPlayer], sizeof(int));
-
-    printf("Check discarded card\n");
-    noAbortAssert(&control.discard[currentPlayer][ control.discardCount[currentPlayer] ], &state->discard[currentPlayer][state->discardCount[currentPlayer]], sizeof(int));
-
-    printf("Check that handCount has been changed\n");
-    noAbortAssert(&control.handCount[currentPlayer], &state->handCount[currentPlayer], sizeof(int));
-
-
-	return 0;
-}
 
 
 int main(){
@@ -69,10 +32,9 @@ int main(){
     int p = 0;
     int nextP = p + 1;
     int bonus = 0;
-    int *ptrBonus = &bonus;
     int seed = 1000;
     int tributeRevealedCards[2] = {-1, -1};
-	struct gameState G, testState control;
+	struct gameState G, testState, control;
 
     int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, tribute, great_hall};
 
@@ -98,7 +60,7 @@ int main(){
 
     controlBonus = 0;
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
     int zero = 0;
     int * ptrZero = &zero;
@@ -141,7 +103,7 @@ int main(){
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
 
     controlBonus = 2;
@@ -196,7 +158,7 @@ int main(){
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
 
     controlBonus = 0;
@@ -257,7 +219,7 @@ int main(){
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
 
 
@@ -315,7 +277,7 @@ int main(){
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
 
     controlBonus = 2;
@@ -379,7 +341,7 @@ int main(){
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+    r = playTribute(handPos, &testState, p, nextP, tributeRevealedCards, &bonus);
 
 
     //Discard played Tribute card
