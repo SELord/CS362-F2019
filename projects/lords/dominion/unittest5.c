@@ -25,14 +25,13 @@
 
 
 int main(){
-	int handPos, controlBonus, j, r, i, choice1, choice2;
+	int handPos, j, r, i, choice1, choice2;
     int zero = 0;
     int negOne = -1;
     int *ptrR = &r;
     int numPlayers = 2;
     int p = 0;
     int seed = 1000;
-    int tributeRevealedCards[2] = {-1, -1};
     struct gameState G, testState, control;
 
     int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, tribute, great_hall};
