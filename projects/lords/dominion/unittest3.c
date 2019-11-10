@@ -143,7 +143,6 @@ int main(){
 	int choice1, choice2, handPos;
     int numPlayers = 4;
     int p = 0;
-    int bonus = 0;
     int seed = 1000;
 	struct gameState G, testState;
 
@@ -213,6 +212,24 @@ int main(){
 
     checkAmbassador(choice1, choice2, &testState, p, handPos);
 
+
+
+    printf("\n\n*****    TEST 4: positive test case    *****\n");
+
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = ambassador;
+    testState.hand[0][1] = estate;
+    testState.hand[0][2] = estate;
+    testState.hand[0][3] = copper;
+    testState.hand[0][4] = copper;
+
+    choice1 = 1;
+    choice2 = 2;
+    handPos = 0;
+
+    checkAmbassador(choice1, choice2, &testState, p, handPos);
 
 
 
