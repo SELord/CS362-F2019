@@ -354,6 +354,7 @@ int main(){
 
     control.handCount[p] += 2;
     control.numActions += 2;
+    control.playedCardCount = 0;
 
 
     printf("Check for return 0\n");
@@ -370,6 +371,9 @@ int main(){
 
     printf("Check discarded card\n");
     noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
+    printf("Check that playedCards has not been incrememented\n");
+    noAbortAssert(&control.playedCardCount, &testState.playedCardCount, sizeof(int));
 
 
 
