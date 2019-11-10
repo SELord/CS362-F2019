@@ -136,5 +136,7 @@ int playAmbassador(int choice1, int choice2, struct gameState *state, int curren
 
 int playTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus);
 
+int playMine(int choice1, int choice2, int handPos, struct gameState *state, int currentPlayer);
+
 
 #endif
