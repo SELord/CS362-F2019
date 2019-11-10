@@ -12,21 +12,28 @@
 /*  
     Pre-conditions necessary for Tribute to play:
 
-    First arg = 
-    Second arg = 
-    Third arg = 
-    Fourth arg = 
+    (int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus)
+
+    First arg = the hand position of the tribute card played
+    Second arg = the game state
+    Third arg = the current player
+    Fourth arg = the next player
+    Fifth arg = pointer to ints of the revealed cards
+    sixth arg = pointer to bonus
 
 */
 
-int checkTribute(int choice1, struct gameState *state, int currentPlayer, int bonus){
+int checkTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus){
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
-	int controlBonus = bonus;
+	int controlBonus;
+    memcpy(&controlBonus, bonus, sizeof(int));
+
+    int controlRevealedCards[2] = {-1, -1};
 
 
-	int r = playAmbassador(choice1, state, currentPlayer, &bonus);
+	int r = playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards, bonus);
     int *ptrR = &r;
 
 
@@ -56,84 +63,352 @@ int checkTribute(int choice1, struct gameState *state, int currentPlayer, int bo
 
 
 int main(){
-	int choice1;
+    int handPos, controlBonus, j, r;
+    int *ptrR = &r;
     int numPlayers = 2;
     int p = 0;
+    int nextP = p + 1;
     int bonus = 0;
+    int *ptrBonus = &bonus;
     int seed = 1000;
-	struct gameState G, testState;
+    int tributeRevealedCards[2] = {-1, -1};
+	struct gameState G, testState control;
 
-    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall};
+    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, tribute, great_hall};
 
     //initialize the game state
     initializeGame(numPlayers, k, seed, &G);
 
 
-    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- playBaron Test Suite -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
+    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- playTribute Test Suite -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
 
-    printf("\n\n*****    TEST 1: choice1 == 1, estate in hand    *****\n");
+    printf("\n\n*****    TEST 1: nextPlayer doesn't have any cards in discard or deck    *****\n");
 
-    choice1 = 1;
+
 
     memcpy(&testState, &G, sizeof(struct gameState));
 
-    //testState.hand[0][0] = baron;
-    testState.hand[0][0] = estate;
+    testState.hand[0][0] = tribute;
+    handPos = 0;
 
-    checkAmbassador(choice1, &testState, p, bonus);
+    testState.deckCount[nextP] = 0;
+    testState.discardCount[nextP] = 0;
 
+    memcpy(&control, &testState, sizeof(struct gameState));
 
+    controlBonus = 0;
 
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
 
-
-    printf("\n\n*****    TEST 2: choice1 == 1, estate in hand, check for bad iterator    *****\n");
-
-    choice1 = 1;
-
-    memcpy(&testState, &G, sizeof(struct gameState));
-
-    testState.hand[0][0] = baron;
-    testState.hand[0][1] = estate;
-    testState.hand[0][2] = copper;
-    testState.hand[0][3] = copper;
-    testState.hand[0][4] = copper;
-
-    checkBaron(choice1, &testState, p, bonus);
+    int zero = 0;
+    int * ptrZero = &zero;
 
 
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
 
-
-
-    printf("\n\n*****    TEST 3: choice1 == 1, estate NOT in hand    *****\n");
-
-    choice1 = 1;
-
-    memcpy(&testState, &G, sizeof(struct gameState));
-
-    testState.hand[0][0] = baron;
-    testState.hand[0][1] = copper;
-    testState.hand[0][2] = copper;
-    testState.hand[0][3] = copper;
-    testState.hand[0][4] = copper;
-
-    checkBaron(choice1, &testState, p, bonus);
+    printf("Check that the Tribute card was discarded after being played\n");
+    noAbortAssert(&control.hand[0][0], &testState.discard[p][testState.discardCount[p]], sizeof(int));
 
 
 
 
 
-    printf("\n\n*****    TEST 4: choice1 == 0    *****\n");
+    printf("\n\n*****    TEST 2: nextPlayer has only 1 card in deck and discard and it is a treasure   *****\n");
 
-    choice1 = 0;
+    tributeRevealedCards[0] = -1;
+    tributeRevealedCards[1] = -1;
+    controlBonus = 0;
+    bonus = 0;
 
     memcpy(&testState, &G, sizeof(struct gameState));
 
-    testState.hand[0][0] = baron;
-    testState.hand[0][1] = estate;
+    testState.hand[0][0] = tribute;
+    handPos = 0;
 
-    checkBaron(choice1, &testState, p, bonus);
+    //zero out next players deck
+    for (j = 0; j < 10; j++){
+        testState.deck[nextP][j] = -1;
+        
+    }
+    testState.deckCount[nextP] = 0;
 
-	
+    //Set nextPlayer's deck to 1 card
+    testState.deck[nextP][testState.deckCount[nextP]] = copper;
+    testState.deckCount[nextP]++;
+
+
+    memcpy(&control, &testState, sizeof(struct gameState));
+
+
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+
+
+    controlBonus = 2;
+
+    //Discard played Tribute card
+    control.discard[p][control.discardCount[p]] = control.hand[p][handPos];
+    control.discardCount[p]++;  //increment the count of cards in players discard pile
+    control.hand[p][handPos] = -1;
+    control.hand[p][handPos] = control.hand[p][ (control.handCount[p] - 1)];
+    control.hand[p][control.handCount[p] - 1] = -1;
+    control.handCount[p]--;
+
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check for bonus increase\n");
+    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
+
+
+
+
+
+    printf("\n\n*****    TEST 3: nextPlayer has only 1 card in deck and discard and it is a victory card   *****\n");
+
+    tributeRevealedCards[0] = -1;
+    tributeRevealedCards[1] = -1;
+    controlBonus = 0;
+    bonus = 0;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = tribute;
+    handPos = 0;
+
+    //zero out next players deck
+    for (j = 0; j < 10; j++){
+        testState.deck[nextP][j] = -1;
+        
+    }
+    testState.deckCount[nextP] = 0;
+
+    //Set nextPlayer's deck to 1 card
+    testState.deck[nextP][testState.deckCount[nextP]] = province;
+    testState.deckCount[nextP]++;
+
+
+    memcpy(&control, &testState, sizeof(struct gameState));
+
+
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+
+
+    controlBonus = 0;
+
+
+    //Discard played Tribute card
+    control.discard[p][control.discardCount[p]] = control.hand[p][handPos];
+    control.discardCount[p]++;  //increment the count of cards in players discard pile
+    control.hand[p][handPos] = -1;
+    control.hand[p][handPos] = control.hand[p][ (control.handCount[p] - 1)];
+    control.hand[p][control.handCount[p] - 1] = -1;
+    control.handCount[p]--;
+
+    control.handCount[p] += 2;
+
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check that bonus has not increased\n");
+    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+
+    printf("Check that handCount has two more\n");
+    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
+
+
+
+
+
+    printf("\n\n*****    TEST 4: nextPlayer has only 1 card in deck and discard and it is an action card   *****\n");
+
+    tributeRevealedCards[0] = -1;
+    tributeRevealedCards[1] = -1;
+    controlBonus = 0;
+    bonus = 0;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = tribute;
+    handPos = 0;
+
+    //zero out next players deck
+    for (j = 0; j < 10; j++){
+        testState.deck[nextP][j] = -1;
+        
+    }
+    testState.deckCount[nextP] = 0;
+
+    //Set nextPlayer's deck to 1 card
+    testState.deck[nextP][testState.deckCount[nextP]] = mine;
+    testState.deckCount[nextP]++;
+
+
+    memcpy(&control, &testState, sizeof(struct gameState));
+
+
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+
+
+
+    //Discard played Tribute card
+    control.discard[p][control.discardCount[p]] = control.hand[p][handPos];
+    control.discardCount[p]++;  //increment the count of cards in players discard pile
+    control.hand[p][handPos] = -1;
+    control.hand[p][handPos] = control.hand[p][ (control.handCount[p] - 1)];
+    control.hand[p][control.handCount[p] - 1] = -1;
+    control.handCount[p]--;
+
+    control.numActions += 2;
+
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check that numActions has increased\n");
+    noAbortAssert(&control.numActions, &testState.numActions, sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
+
+
+
+
+
+    printf("\n\n*****    TEST 5: positive test case: nextPlayer has two different cards in deck/discard: treasure/victory    *****\n");
+
+    tributeRevealedCards[0] = -1;
+    tributeRevealedCards[1] = -1;
+    controlBonus = 0;
+    bonus = 0;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = tribute;
+    handPos = 0;
+
+    //zero out next players deck
+    for (j = 0; j < 10; j++){
+        testState.deck[nextP][j] = -1;
+        
+    }
+    testState.deckCount[nextP] = 0;
+
+    //Set nextPlayer's deck to 2 cards
+    testState.deck[nextP][testState.deckCount[nextP]] = copper;
+    testState.deckCount[nextP]++;
+    testState.deck[nextP][testState.deckCount[nextP]] = province;
+    testState.deckCount[nextP]++;
+
+
+    memcpy(&control, &testState, sizeof(struct gameState));
+
+
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+
+
+    controlBonus = 2;
+
+    //Discard played Tribute card
+    control.discard[p][control.discardCount[p]] = control.hand[p][handPos];
+    control.discardCount[p]++;  //increment the count of cards in players discard pile
+    control.hand[p][handPos] = -1;
+    control.hand[p][handPos] = control.hand[p][ (control.handCount[p] - 1)];
+    control.hand[p][control.handCount[p] - 1] = -1;
+    control.handCount[p]--;
+
+    control.handCount[p] += 2;
+
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check for bonus increase\n");
+    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+
+    printf("Check that handCount has two more\n");
+    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
+
+
+
+
+
+
+
+    printf("\n\n*****    TEST 6: positive test case: nextPlayer has two different cards in deck/discard: victory/action    *****\n");
+
+    tributeRevealedCards[0] = -1;
+    tributeRevealedCards[1] = -1;
+    controlBonus = 0;
+    bonus = 0;
+
+    memcpy(&testState, &G, sizeof(struct gameState));
+
+    testState.hand[0][0] = tribute;
+    handPos = 0;
+
+    //zero out next players deck
+    for (j = 0; j < 10; j++){
+        testState.deck[nextP][j] = -1;
+        
+    }
+    testState.deckCount[nextP] = 0;
+
+    //Set nextPlayer's deck to 2 cards
+    testState.deck[nextP][testState.deckCount[nextP]] = province;
+    testState.deckCount[nextP]++;
+    testState.deck[nextP][testState.deckCount[nextP]] = mine;
+    testState.deckCount[nextP]++;
+
+
+    memcpy(&control, &testState, sizeof(struct gameState));
+
+
+    r = playTribute(handPos, &testState, currentPlayer, nextP, &tributeRevealedCards, &bonus);
+
+
+    //Discard played Tribute card
+    control.discard[p][control.discardCount[p]] = control.hand[p][handPos];
+    control.discardCount[p]++;  //increment the count of cards in players discard pile
+    control.hand[p][handPos] = -1;
+    control.hand[p][handPos] = control.hand[p][ (control.handCount[p] - 1)];
+    control.hand[p][control.handCount[p] - 1] = -1;
+    control.handCount[p]--;
+
+    control.handCount[p] += 2;
+    control.numActions += 2;
+
+
+    printf("Check for return 0\n");
+    noAbortAssert(ptrR, ptrZero, sizeof(int));
+
+    printf("Check that bonus has not increased\n");
+    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+
+    printf("Check that handCount has two more\n");
+    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+
+    printf("Check that numActions has increased\n");
+    noAbortAssert(&control.numActions, &testState.numActions, sizeof(int));
+
+    printf("Check discarded card\n");
+    noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
+
 
 
 
