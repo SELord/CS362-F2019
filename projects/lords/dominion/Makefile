@@ -28,14 +28,38 @@ unittest4: unittest4.c dominion.o noAbortAssert.o rngs.o
 unittest5: unittest5.c dominion.o noAbortAssert.o rngs.o
 	gcc  -o unittest5 -g  unittest5.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
+unittestresults: unittest1 unittest2 unittest3 unittest4 unittest5
+	echo _____________________________________________________________________________________________________________________________________ unittest1 - baron > unittestresults.out
+	echo ________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	./unittest1 >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ unittest2 - minion >> unittestresults.out
+	echo ________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	./unittest2 >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ unittest3 - ambassador >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	./unittest3 >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ unittest4 - tribute >> unittestresults.out
+	echo _________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	./unittest4 >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ unittest5 - mine >> unittestresults.out
+	echo ______________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	./unittest5 >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ Code Coverage Results >> unittestresults.out
+	echo ___________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	gcov dominion.c -fb >> unittestresults.out
+	echo _____________________________________________________________________________________________________________________________________ Contents of dominion.c.gcov >> unittestresults.out
+	echo _________________________________________________________________________________________________________________________________________________________________ >> unittestresults.out
+	cat dominion.c.gcov >> unittestresults.out
+
+
 interface.o: interface.c interface.h
 	gcc -c interface.c -g  $(CFLAGS)
 
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom unittest1 unittest2 unittest3 unittest4 unittest5 player 
+all: playdom unittestresults player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1 unittest2 unittest3 unittest4 unittest5
-	rm -r playdom.dSYM player.dSYM unittest1.dSYM unittest2.dSYM unittest3.dSYM unittest4.dSYM unittest5.dSYM
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1 unittest2 unittest3 unittest4 unittest5 unittestresults unittestresults.out
+	rm -r *.dSYM
