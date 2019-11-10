@@ -105,7 +105,7 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
 
 
     int i;
-    for(i = 0; i < state->numPlayers; i++){
+    for(i = 0; i < control.numPlayers; i++){
         printf("Check player #%d handCount\n", i);
         noAbortAssert(&control.handCount[i], &state->handCount[i], sizeof(int));
 
