@@ -28,7 +28,7 @@ interface.o: interface.c interface.h
 player: player.c interface.o
 	gcc -o player player.c -g  dominion.o rngs.o interface.o $(CFLAGS)
 
-all: playdom unittest1 unittest2 player 
+all: playdom unittest1 unittest2 unittest3 player 
 
 clean:
 	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out unittest1 unittest2 unittest3
