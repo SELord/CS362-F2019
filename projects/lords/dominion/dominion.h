@@ -134,5 +134,7 @@ int playMinion(int choice1, int choice2, struct gameState *state, int currentPla
 
 int playAmbassador(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos);
 
+int playTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus);
+
 
 #endif
