@@ -4,3 +4,4 @@
 *.gcda
 playdom
 player
+.DS_Store
