@@ -5,14 +5,39 @@
 
 char inputChar()
 {
-    // TODO: rewrite this function
-    return ' ';
+    char choices[9] = {'[', '(', '{', ' ', 'a', 'x', '}', ')', ']'};
+    int lastElement = 8;
+
+    int elementToReturn = (rand() % (lastElement + 1));
+
+    return choices[elementToReturn];
 }
 
 char *inputString()
 {
-    // TODO: rewrite this function
-    return "";
+    char * fiveLeterWords[] = 
+    {
+        "fuzzy",
+        "fizzy",
+        "dizzy",
+        "pizza",
+        "makes",
+        "funny",
+        "jokes",
+        "about",
+        "jacky",
+        "jumpy",
+        "boozy",
+        "field",
+        "balls",
+        "jukes",
+        "banjo",
+        "reset"
+    };
+
+    int diceRoll = rand() % 16;
+    
+    return fiveLeterWords[diceRoll];
 }
 
 void testme()
