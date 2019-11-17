@@ -10,8 +10,11 @@ playdom: dominion.o playdom.c
 	gcc -o playdom playdom.c -g dominion.o rngs.o $(CFLAGS)
 #To run playdom you need to entere: ./playdom <any integer number> like ./playdom 10*/
 
-testDrawCard: testDrawCard.c dominion.o rngs.o
-	gcc  -o testDrawCard -g  testDrawCard.c dominion.o rngs.o $(CFLAGS)
+noAbortAssert.o: noAbortAssert.c noAbortAssert.h
+	gcc -c noAbortAssert.c -g $(CFLAGS)
+
+randomtestcard1: randomtestcard1.c dominion.o noAbortAssert.o rngs.o
+	gcc  -o randomtestcard1 -g  randomtestcard1.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
@@ -28,4 +31,5 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out testDrawCard testDrawCard.exe
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out randomtestcard1
+	rm -r *.dSYM
