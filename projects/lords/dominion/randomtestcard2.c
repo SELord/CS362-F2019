@@ -2,8 +2,9 @@
 #include "dominion_helpers.h"
 #include <string.h>
 #include <stdio.h>
+#include <stdlib.h>
 #include "noAbortAssert.h"
-#include "rngs.h"
+#include <time.h>
 
 
 
@@ -59,31 +60,37 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
             control.deckCount[currentPlayer]--;  //Decrement deck count
             control.handCount[currentPlayer]++;  //Increment hand count
         }
-        //other players discard hand and redraw if hand size > 4
-        for (int otherPlayer = 1; otherPlayer < control.numPlayers; otherPlayer++)
-        {
-            //otherPlayer = 0 is current player. skip current play in this portion since we already did it above
-            if ( control.handCount[otherPlayer] > 4 )
-            {
-                //discard hand
-                while( control.handCount[otherPlayer] > 0 )
-                {
-                    control.discard[otherPlayer][control.discardCount[otherPlayer]] = control.hand[otherPlayer][0];
-                    control.discardCount[otherPlayer]++;  //increment the count of cards in players discard pile
-                    control.hand[otherPlayer][0] = -1;
-                    control.hand[otherPlayer][0] = control.hand[otherPlayer][ (control.handCount[otherPlayer] - 1)];
-                    control.hand[otherPlayer][control.handCount[otherPlayer] - 1] = -1;
-                    control.handCount[otherPlayer]--;
-                }
 
-                //draw 4
-                for (int j = 0; j < 4; j++)
-                {
-                    //assume there are enough cards in player's deck
-                    control.hand[otherPlayer][control.handCount[otherPlayer]] = control.deck[otherPlayer][control.deckCount[otherPlayer] - 1];//Add card to end of hand
-                    control.deckCount[otherPlayer]--;  //Decrement deck count
-                    control.handCount[otherPlayer]++;  //Increment hand count
-                }
+
+
+        //other players discard hand and redraw if hand size > 4
+        for (int otherPlayer = 0; otherPlayer < control.numPlayers; otherPlayer++)
+        {
+        	if (otherPlayer != currentPlayer)
+        	{
+	            //otherPlayer = 0 is current player. skip current player in this portion since we already did it above
+	            if ( control.handCount[otherPlayer] > 4 )
+	            {
+	                //discard hand
+	                while( control.handCount[otherPlayer] > 0 )
+	                {
+	                    control.discard[otherPlayer][control.discardCount[otherPlayer]] = control.hand[otherPlayer][0];
+	                    control.discardCount[otherPlayer]++;  //increment the count of cards in players discard pile
+	                    control.hand[otherPlayer][0] = -1;
+	                    control.hand[otherPlayer][0] = control.hand[otherPlayer][ (control.handCount[otherPlayer] - 1)];
+	                    control.hand[otherPlayer][control.handCount[otherPlayer] - 1] = -1;
+	                    control.handCount[otherPlayer]--;
+	                }
+
+	                //draw 4
+	                for (int j = 0; j < 4; j++)
+	                {
+	                    //assume there are enough cards in player's deck
+	                    control.hand[otherPlayer][control.handCount[otherPlayer]] = control.deck[otherPlayer][control.deckCount[otherPlayer] - 1];//Add card to end of hand
+	                    control.deckCount[otherPlayer]--;  //Decrement deck count
+	                    control.handCount[otherPlayer]++;  //Increment hand count
+	                }
+	            }
             }
         }
     }
@@ -121,119 +128,83 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
 
 
 int main(){
-	int choice1, choice2, handPos, x;
-    int numPlayers = 3;
-    int p = 0;
-    int bonus = 0;
-    int seed = 1000;
-	struct gameState G, testState;
+    int i, j, n, currentPlayer, choice1, choice2, handPos, bonus, numPlayers, randomHandCount, randomDeckCount, randomDiscardCount;
 
-    int k[10] = {adventurer, council_room, feast, gardens, mine, remodel, smithy, village, minion, great_hall};
-
-    //initialize the game state
-    initializeGame(numPlayers, k, seed, &G);
+    int masterCardList[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
 
 
-    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- playMinion Test Suite -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
+    struct gameState G;
 
-    printf("\n\n*****    TEST 1: choice1 == 1    *****\n");
+    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- playMinion Random Testing -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
 
-    choice1 = 1;
-    choice2 = 0;
+    srand(time(NULL));
 
-    memcpy(&testState, &G, sizeof(struct gameState));
+    for (n = 0; n < 2000; n++) {
+        numPlayers = (rand() % 3)+2;     //Random number of players from 2 to 4
+        currentPlayer = (rand() % (numPlayers - 1));    //random number from 0 to 3, representing 1 of 4 players
+        choice1 = (rand() % 2);    //random either 0 or 1
+        choice2 = (rand() % 2);    //random either 0 or 1
+        bonus = rand();
+        randomDeckCount = (rand() % (MAX_DECK+1));
+        randomHandCount = (rand() % (MAX_HAND+1));
+        randomDiscardCount = (rand() % (MAX_DECK+1));
+        randomHandPos = (rand() % randomHandCount);
+
+        //random game state
+        for (i = 0; i < sizeof(struct gameState); i++) {
+            ((char*)&G)[i] = rand() % 256;
+        }
 
 
+        //set numBuys
+        G.numBuys = rand();
 
-    testState.hand[0][0] = minion;
-    testState.hand[0][1] = estate;
-    testState.hand[0][2] = copper;
-    testState.hand[0][3] = copper;
-    testState.hand[0][4] = copper;
+        //set all players deck
+        for (i = 0; i < numPlayers; i++)
+        {
+	        G.deckCount[i] = 0;
+	        for (j = 0; j < randomDeckCount; j++)
+	        {
+	            G.deck[i][j] = masterCardList[(rand() % 27)];
+	            G.deckCount[i]++;
+	        }
+        }
 
-    handPos = 0;
 
-    for(x = 1; x < numPlayers; x++){
-        testState.hand[x][0] = estate;
-        testState.hand[x][1] = estate;
-        testState.hand[x][2] = copper;
-        testState.hand[x][3] = copper;
-        testState.hand[x][4] = copper;
-        testState.handCount[x] = 5;
+        //setup all player hands
+        for (i = 0; i < numPlayers; i++)
+        {
+	        G.handCount[i] = 0;
+	        for (j = 0; j < randomHandCount; j++)
+	        {
+	            G.hand[i][j] = masterCardList[(rand() % 27)];
+	            G.handCount[i]++;
+	        }
+	    }
+
+        //set a specific handPos with minion just for the currentPlayer
+        G.hand[currentPlayer][randomHandPos] = minion;
+        handPos = randomHandPos; 
+
+
+        //set player discard
+        for (i = 0; i < numPlayers; i++)
+        {
+	        G.discardCount[i] = 0;
+	        for (j = 0; j < randomDiscardCount; j++)
+	        {
+	            G.discard[i][j] = masterCardList[(rand() % 27)];
+	            G.discardCount[i]++;
+	        }
+	    }
+
+
+        checkMinion(choice1, choice2, &G, currentPlayer, handPos, bonus);
     }
 
-
-
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
-
+    printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- End Of playMinion Testing -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
 
 
 
-
-    printf("\n\n*****    TEST 2: choice1 == 0, choice2 == 1    *****\n");
-    //going to need to check the following:
-    //    1) current player handCount
-    //    2) current player deckCount
-    //    3) other player's handCount
-    //    4) other player's deckCount
-    //    5) discardCount 
-
-    choice1 = 0;
-    choice2 = 1;
-
-    memcpy(&testState, &G, sizeof(struct gameState));
-
-    testState.hand[0][0] = minion;
-    testState.hand[0][1] = estate;
-    testState.hand[0][2] = copper;
-    testState.hand[0][3] = copper;
-    testState.hand[0][4] = copper;
-
-    handPos = 0;
-
-    for(x = 1; x < numPlayers; x++){
-        testState.hand[x][0] = estate;
-        testState.hand[x][1] = estate;
-        testState.hand[x][2] = copper;
-        testState.hand[x][3] = copper;
-        testState.hand[x][4] = copper;
-        testState.handCount[x] = 5;
-    }
-
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
-
-
-
-
-
-    printf("\n\n*****    TEST 3: choice1 == 0, choice2 == 0    *****\n");
-
-    choice1 = 0;
-    choice2 = 0;
-
-    memcpy(&testState, &G, sizeof(struct gameState));
-
-    testState.hand[0][0] = minion;
-    testState.hand[0][1] = estate;
-    testState.hand[0][2] = copper;
-    testState.hand[0][3] = copper;
-    testState.hand[0][4] = copper;
-
-    handPos = 0;
-
-    for(x = 1; x < numPlayers; x++){
-        testState.hand[x][0] = estate;
-        testState.hand[x][1] = estate;
-        testState.hand[x][2] = copper;
-        testState.hand[x][3] = copper;
-        testState.hand[x][4] = copper;
-        testState.handCount[x] = 5;
-    }
-
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
-
-
-
-	return 0;
+    return 0;
 }
-
