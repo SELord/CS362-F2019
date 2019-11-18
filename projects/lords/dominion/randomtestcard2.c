@@ -139,28 +139,34 @@ int main(){
 
     srand(time(NULL));
 
-    for (n = 0; n < 2000; n++) {
+    for (n = 0; n < 100; n++) {
         numPlayers = (rand() % (MAX_PLAYERS-1))+2;     //Random number of players from 2 to 4
         currentPlayer = (rand() % (numPlayers - 1));    //random number from 0 to 3, representing 1 of 4 players
         choice1 = (rand() % 2);    //random either 0 or 1
         choice2 = (rand() % 2);    //random either 0 or 1
-        bonus = rand();
+        bonus = rand() % 100;
         randomDeckCount = (rand() % (MAX_DECK+1));
         randomHandCount = (rand() % (MAX_HAND+1));
-        randomDiscardCount = (rand() % (MAX_DECK+1));
-        randomHandPos = (rand() % randomHandCount);
+        randomDiscardCount = randomDeckCount - (rand() % ((MAX_DECK/2)+1));
+        randomHandPos = (rand() % randomHandCount+1);
 
         //random game state
         for (i = 0; i < sizeof(struct gameState); i++) {
-            ((char*)&G)[i] = rand() % 256;
+            ((char*)&G)[i] = rand() % 250;
         }
 
         //set whoseTurn
         G.whoseTurn = currentPlayer;
 
+        //set numActions
+        G.numActions = rand() % 100;
+
+        //set number of players
+        G.numPlayers = numPlayers;
+
 
         //set numBuys
-        G.numBuys = rand();
+        G.numBuys = rand() % 500;
 
         //set all players deck
         for (i = 0; i < numPlayers; i++)
