@@ -128,7 +128,7 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
 
 
 int main(){
-    int i, j, n, currentPlayer, choice1, choice2, handPos, bonus, numPlayers, randomHandCount, randomDeckCount, randomDiscardCount;
+    int i, j, n, currentPlayer, choice1, choice2, handPos, bonus, numPlayers, randomHandCount, randomDeckCount, randomDiscardCount, randomHandPos;
 
     int masterCardList[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
 
@@ -140,7 +140,7 @@ int main(){
     srand(time(NULL));
 
     for (n = 0; n < 2000; n++) {
-        numPlayers = (rand() % 3)+2;     //Random number of players from 2 to 4
+        numPlayers = (rand() % (MAX_PLAYERS-1))+2;     //Random number of players from 2 to 4
         currentPlayer = (rand() % (numPlayers - 1));    //random number from 0 to 3, representing 1 of 4 players
         choice1 = (rand() % 2);    //random either 0 or 1
         choice2 = (rand() % 2);    //random either 0 or 1
@@ -154,6 +154,9 @@ int main(){
         for (i = 0; i < sizeof(struct gameState); i++) {
             ((char*)&G)[i] = rand() % 256;
         }
+
+        //set whoseTurn
+        G.whoseTurn = currentPlayer;
 
 
         //set numBuys
