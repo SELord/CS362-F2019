@@ -22,6 +22,23 @@ randomtestcard2: randomtestcard2.c dominion.o noAbortAssert.o rngs.o
 randomtestcard3: randomtestcard3.c dominion.o noAbortAssert.o rngs.o
 	gcc  -o randomtestcard3 -g  randomtestcard3.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
+randomtestresults: randomtestcard1 randomtestcard2 randomtestcard3
+	echo _____________________________________________________________________________________________________________________________________ randomtestcard1 - baron > randomtestresults.out
+	echo ________________________________________________________________________________________________________________________________________________________ >> randomtestresults.out
+	./randomtestcard1 >> randomtestresults.out 2>&1
+	echo _____________________________________________________________________________________________________________________________________ randomtestcard2 - minion >> randomtestresults.out
+	echo ________________________________________________________________________________________________________________________________________________________ >> randomtestresults.out
+	./randomtestcard2 >> randomtestresults.out 2>&1
+	echo _____________________________________________________________________________________________________________________________________ randomtestcard3 - tribute >> randomtestresults.out
+	echo _________________________________________________________________________________________________________________________________________________________ >> randomtestresults.out
+	./randomtestcard3 >> randomtestresults.out 2>&1
+	echo _____________________________________________________________________________________________________________________________________ Code Coverage Results >> randomtestresults.out
+	echo ___________________________________________________________________________________________________________________________________________________________ >> randomtestresults.out
+	gcov dominion.c -fb >> randomtestresults.out 2>&1
+	echo _____________________________________________________________________________________________________________________________________ Contents of dominion.c.gcov >> randomtestresults.out
+	echo _________________________________________________________________________________________________________________________________________________________________ >> randomtestresults.out
+	cat dominion.c.gcov >> randomtestresults.out 2>&1
+
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
