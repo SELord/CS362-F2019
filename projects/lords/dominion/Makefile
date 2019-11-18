@@ -19,6 +19,9 @@ randomtestcard1: randomtestcard1.c dominion.o noAbortAssert.o rngs.o
 randomtestcard2: randomtestcard2.c dominion.o noAbortAssert.o rngs.o
 	gcc  -o randomtestcard2 -g  randomtestcard2.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
 
+randomtestcard3: randomtestcard3.c dominion.o noAbortAssert.o rngs.o
+	gcc  -o randomtestcard3 -g  randomtestcard3.c dominion.o noAbortAssert.o rngs.o $(CFLAGS)
+
 interface.o: interface.h interface.c
 	gcc -c interface.c -g  $(CFLAGS)
 
@@ -34,5 +37,5 @@ player: player.c interface.o
 all: playdom player 
 
 clean:
-	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out randomtestcard1 randomtestcard2
+	rm -f *.o playdom.exe playdom player player.exe  *.gcov *.gcda *.gcno *.so *.out randomtestcard1 randomtestcard2 randomtestcard3
 	rm -r *.dSYM
