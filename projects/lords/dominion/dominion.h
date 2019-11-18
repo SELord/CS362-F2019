@@ -133,5 +133,7 @@ int playBaron(int choice1, struct gameState *state, int currentPlayer, int *bonu
 
 int playMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int *bonus);
 
+int playTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int *bonus);
+
 
 #endif
