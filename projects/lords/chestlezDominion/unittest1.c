@@ -25,16 +25,12 @@
     deckCount for the player must be set
 */
 
-int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonus){
+int checkBaron(int choice1, struct gameState *state, int currentPlayer){
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
-	int controlBonus = bonus;
 
-
-	int r = playBaron(choice1, state, currentPlayer, &bonus);
-    int *ptrR = &r;
-
+	baronHandler(state, choice1, currentPlayer);
 
     control.numBuys++;
 
@@ -43,7 +39,7 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonu
     	int estateFlag = 0;
     	for(int x = 0; x < control.handCount[currentPlayer]; x++){
     		if(control.hand[currentPlayer][x] == estate){
-    			controlBonus += 4;
+    			control.coins += 4;
     			control.discard[currentPlayer][control.discardCount[currentPlayer]] = control.hand[currentPlayer][x];
                 control.discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
     
@@ -73,15 +69,9 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer, int bonu
     }
 
 
-    int zero = 0;
-    int * ptrZero = &zero;
-
-    printf("Check for return 0\n");
-    noAbortAssert(ptrR, ptrZero, sizeof(int));
-
-    printf("Check for bonus increase\n");
-    noAbortAssert(&controlBonus, &bonus, sizeof(int));
-
+    printf("Check for coin increase\n");
+    noAbortAssert(control.coins, &state->coins, sizeof(int));
+    
     printf("Check that discardCount has been changed\n");
     noAbortAssert(&control.discardCount[currentPlayer], &state->discardCount[currentPlayer], sizeof(int));
 
@@ -100,7 +90,6 @@ int main(){
 	int choice1;
     int numPlayers = 2;
     int p = 0;
-    int bonus = 0;
     int seed = 1000;
 	struct gameState G, testState;
 
@@ -121,7 +110,7 @@ int main(){
     //testState.hand[0][0] = baron;
     testState.hand[0][0] = estate;
 
-    checkBaron(choice1, &testState, p, bonus);
+    checkBaron(choice1, &testState, p);
 
 
 
@@ -139,7 +128,7 @@ int main(){
     testState.hand[0][3] = copper;
     testState.hand[0][4] = copper;
 
-    checkBaron(choice1, &testState, p, bonus);
+    checkBaron(choice1, &testState, p);
 
 
 
@@ -157,7 +146,7 @@ int main(){
     testState.hand[0][3] = copper;
     testState.hand[0][4] = copper;
 
-    checkBaron(choice1, &testState, p, bonus);
+    checkBaron(choice1, &testState, p);
 
 
 
@@ -172,7 +161,7 @@ int main(){
     testState.hand[0][0] = baron;
     testState.hand[0][1] = estate;
 
-    checkBaron(choice1, &testState, p, bonus);
+    checkBaron(choice1, &testState, p);
 
 	
 
