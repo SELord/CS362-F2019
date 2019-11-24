@@ -127,4 +127,17 @@ int getWinners(int players[MAX_PLAYERS], struct gameState *state);
 /* Set array position of each player who won (remember ties!) to
    1, others to 0 */
 
+
+void baronHandler(struct gameState *state, int choice1, int currentPlayer);
+
+void minionHandler(struct gameState *state, int choice1, int choice2, int currentPlayer, int handPos);
+
+int ambassadorHandler(struct gameState *state, int choice1, int choice2, int currentPlayer, int handPos);
+
+void tributeHandler(struct gameState *state, int currentPlayer, int nextPlayer);
+
+int mineHandler(struct gameState *state, int choice1, int choice2, int currentPlayer);
+
+
+
 #endif
