@@ -31,11 +31,10 @@ int comparator(const void* a, const void* b) {
 }
 
 
-int checkTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards, int bonus){
+int checkTribute(int handPos, struct gameState *state, int currentPlayer, int nextPlayer, int *tributeRevealedCards){
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
-	int controlBonus = bonus;
     int controlTribReveal[2];
     memcpy(&controlTribReveal, tributeRevealedCards, sizeof(int));
     //controlTribReveal[0] = *tributeRevealedCards[0];
@@ -312,7 +311,7 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
 
 
 int main(){
-    int i, j, n, handPos, currentPlayer, nextPlayer, bonus, numPlayers, randomHandCount, randomDeckCount, randomDiscardCount, randomHandPos;
+    int i, j, n, handPos, currentPlayer, nextPlayer, numPlayers, randomHandCount, randomDeckCount, randomDiscardCount, randomHandPos;
     int tributeRevealedCards[2] = {-1, -1};
     int masterCardList[27] = {curse, estate, duchy, province, copper, silver, gold, adventurer, council_room, feast, gardens, mine, remodel, smithy, village, baron, great_hall, minion, steward, tribute, ambassador, cutpurse, embargo, outpost, salvager, sea_hag, treasure_map};
 
@@ -323,7 +322,7 @@ int main(){
 
     srand(time(NULL));
 
-    for (n = 0; n < 100; n++) {
+    for (n = 0; n < 10000; n++) {
         numPlayers = (rand() % (MAX_PLAYERS-1))+2;     //Random number of players from 2 to 4
         currentPlayer = (rand() % (numPlayers - 1));    //random number from 0 to 3, representing 1 of 4 players
         if(currentPlayer == 3){   //If current player is at the max allowed, loop to begining for next player
@@ -334,12 +333,10 @@ int main(){
         }
 
 
-
-        bonus = rand() % 100;
         randomDeckCount = (rand() % (MAX_DECK+1));
-        randomHandCount = (rand() % (MAX_HAND+1));
-        randomDiscardCount = randomDeckCount - (rand() % ((MAX_DECK/2)+1));
-        randomHandPos = (rand() % randomHandCount+1);
+        randomHandCount = (rand() % (MAX_HAND+1))+1;
+        randomDiscardCount = (rand() % ((MAX_DECK/5)+1));
+        randomHandPos = (rand() % randomHandCount);
 
 
         //random game state
@@ -414,7 +411,7 @@ int main(){
         }
 
 
-        checkTribute(handPos, &G, currentPlayer, nextPlayer, tributeRevealedCards, bonus);
+        checkTribute(handPos, &G, currentPlayer, nextPlayer, tributeRevealedCards);
     }
 
     printf("\n_-_-_-_-_-_-_-_-_-_-_-_-_- End Of playTribute Testing -_-_-_-_-_-_-_-_-_-_-_-_-_\n\n");
