@@ -27,7 +27,7 @@ int checkAmbassador(int choice1, int choice2, struct gameState *state, int curre
 	memcpy (&control, state, sizeof(struct gameState));
 
 
-	int r = playAmbassador(choice1, choice2, state, currentPlayer, handPos);
+	int r = ambassadorHandler(state, choice1, choice2, currentPlayer, handPos);
     int *ptrR = &r;
 
     int retVal = 0;
