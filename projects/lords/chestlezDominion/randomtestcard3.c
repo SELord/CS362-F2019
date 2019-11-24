@@ -302,6 +302,9 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
     printf("Check that playedCards has not been incrememented\n");
     noAbortAssert(&control.playedCardCount, &state->playedCardCount, sizeof(int));
 
+    
+    printf("------------------------------\n");
+
 	return 0;
 }
 
@@ -338,6 +341,7 @@ int main(){
         randomDiscardCount = (rand() % ((MAX_DECK/5)+1));
         randomHandPos = (rand() % randomHandCount);
 
+        printf("\n------------------------------\n");
 
         //random game state
         for (i = 0; i < sizeof(struct gameState); i++) {
@@ -346,12 +350,15 @@ int main(){
 
         //set whoseTurn
         G.whoseTurn = currentPlayer;
+        printf("currentPlayer: %d\n", currentPlayer);
 
         //set numActions
         G.numActions = rand() % 100;
+        printf("numActions: %d\n",G.numActions);
 
         //set number of players
         G.numPlayers = numPlayers;
+        printf("numPlayers: %d\n",numPlayers);
 
 
         //set numBuys
@@ -359,6 +366,7 @@ int main(){
       
         //set coins
         G.coins = rand() % 4;
+        printf("Coins: %d\n", G.coins);
 
         //set all players deck
         for (i = 0; i < numPlayers; i++)
@@ -383,6 +391,7 @@ int main(){
 	        }
 	    }
 
+
         //set a specific handPos with minion just for the currentPlayer
         G.hand[currentPlayer][randomHandPos] = tribute;
         handPos = randomHandPos; 
@@ -401,6 +410,13 @@ int main(){
 	        }
 	    }
 
+
+        for(i = 0; i < numPlayers; i++)
+        {
+            printf("Player [%d] deckCount: %d\n", i, G.deckCount[i]);
+            printf("Player [%d] handCount: %d\n", i, G.handCount[i]);
+            printf("Player [%d] discardCount: %d\n", i, G.discardCount[i]);
+        }
 
         //set playedCards and playedCardCount
         G.playedCardCount = 0;
