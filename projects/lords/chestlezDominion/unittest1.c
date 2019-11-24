@@ -70,7 +70,7 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer){
 
 
     printf("Check for coin increase\n");
-    noAbortAssert(control.coins, &state->coins, sizeof(int));
+    noAbortAssert(&control.coins, &state->coins, sizeof(int));
     
     printf("Check that discardCount has been changed\n");
     noAbortAssert(&control.discardCount[currentPlayer], &state->discardCount[currentPlayer], sizeof(int));
@@ -80,6 +80,10 @@ int checkBaron(int choice1, struct gameState *state, int currentPlayer){
 
     printf("Check that handCount has been changed\n");
     noAbortAssert(&control.handCount[currentPlayer], &state->handCount[currentPlayer], sizeof(int));
+
+
+    printf("Check that estate supply count is correct\n");
+    noAbortAssert(&control.supplyCount[estate], &state->supplyCount[estate], sizeof(int));
 
 
 	return 0;
@@ -132,7 +136,7 @@ int main(){
 
 
 
-
+/*
 
     printf("\n\n*****    TEST 3: choice1 == 1, estate NOT in hand    *****\n");
 
@@ -148,7 +152,7 @@ int main(){
 
     checkBaron(choice1, &testState, p);
 
-
+*/
 
 
 
