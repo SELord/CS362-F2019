@@ -23,8 +23,8 @@
 
 
 int main(){
-    int j, r;
-    int *ptrR = &r;
+    int j;
+    int handPos = 0;
     int numPlayers = 2;
     int p = 0;
     int nextP = p + 1;
@@ -49,11 +49,20 @@ int main(){
 
     testState.deckCount[nextP] = 0;
     testState.discardCount[nextP] = 0;
+    testState.coins = 0;
+
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
+
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
 
 
@@ -83,11 +92,19 @@ int main(){
     testState.deck[nextP][testState.deckCount[nextP]] = copper;
     testState.deckCount[nextP]++;
 
+    testState.coins = 0;
+
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
     control.coins = 2;
 
@@ -130,11 +147,18 @@ int main(){
     testState.deck[nextP][testState.deckCount[nextP]] = province;
     testState.deckCount[nextP]++;
 
+    testState.coins = 0;
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
     control.coins = 0;
 
@@ -147,15 +171,15 @@ int main(){
     control.hand[p][control.handCount[p] - 1] = -1;
     control.handCount[p]--;
 
-    control.handCount[p] += 2;
+    control.discardCount[p] += 2;
 
 
 
     printf("Check that coins have not increased\n");
     noAbortAssert(&control.coins, &testState.coins, sizeof(int));
 
-    printf("Check that handCount has two more\n");
-    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+    printf("Check that discardCount has two more\n");
+    noAbortAssert(&control.discardCount[p], &testState.discardCount[p], sizeof(int));
 
     printf("Check discarded card\n");
     noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
@@ -183,11 +207,18 @@ int main(){
     testState.deck[nextP][testState.deckCount[nextP]] = mine;
     testState.deckCount[nextP]++;
 
+    testState.coins = 0;
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
 
 
@@ -234,11 +265,18 @@ int main(){
     testState.deck[nextP][testState.deckCount[nextP]] = province;
     testState.deckCount[nextP]++;
 
+    testState.coins = 0;
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
 
     control.coins = 2;
@@ -251,15 +289,15 @@ int main(){
     control.hand[p][control.handCount[p] - 1] = -1;
     control.handCount[p]--;
 
-    control.handCount[p] += 2;
+    control.discardCount[p] += 2;
 
 
 
     printf("Check for coin increase\n");
     noAbortAssert(&control.coins, &testState.coins, sizeof(int));
 
-    printf("Check that handCount has two more\n");
-    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+    printf("Check that discardCount has two more\n");
+    noAbortAssert(&control.discardCount[p], &testState.discardCount[p], sizeof(int));
 
     printf("Check discarded card\n");
     noAbortAssert(&control.discard[p][ control.discardCount[p] ], &testState.discard[p][testState.discardCount[p]], sizeof(int));
@@ -291,11 +329,18 @@ int main(){
     testState.deck[nextP][testState.deckCount[nextP]] = mine;
     testState.deckCount[nextP]++;
 
+    testState.coins = 0;
+    testState.hand[p][0] = tribute;
+    testState.hand[p][1] = copper;
+    testState.hand[p][2] = estate;
+    testState.handCount[p] = 3;
+    testState.discardCount[p] = 0;
+    testState.discard[p][0] = -1;
 
     memcpy(&control, &testState, sizeof(struct gameState));
 
 
-    tributeHandler(state, currentPlayer, nextPlayer);
+    tributeHandler(&testState, p, nextP);
 
 
     //Discard played Tribute card
@@ -315,8 +360,8 @@ int main(){
     printf("Check that coins have not increased\n");
     noAbortAssert(&control.coins, &testState.coins, sizeof(int));
 
-    printf("Check that handCount has two more\n");
-    noAbortAssert(&control.handCount[p], &testState.handCount[p], sizeof(int));
+    printf("Check that discardCount has two more\n");
+    noAbortAssert(&control.discardCount[p], &testState.discardCount[p], sizeof(int));
 
     printf("Check that numActions has increased\n");
     noAbortAssert(&control.numActions, &testState.numActions, sizeof(int));
