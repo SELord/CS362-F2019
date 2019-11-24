@@ -42,8 +42,7 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
     //controlTribReveal[1] = *tributeRevealedCards[1];
 
 
-	int r = playTribute(handPos, state, currentPlayer, nextPlayer, tributeRevealedCards, &bonus);
-    int *ptrR = &r;
+	tributeHandler(state, currentPlayer, nextPlayer);
 
 
     int i, j;
@@ -122,7 +121,7 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
         if (controlTribReveal[0] == controlTribReveal[1]) { //Check for duplicate card and only gain rewards once
             if (controlTribReveal[0] == copper || controlTribReveal[0] == silver || controlTribReveal[0] == gold) 
             { //Treasure cards
-                controlBonus += 2;
+                control.coins += 2;
             }
             else if (controlTribReveal[0] == estate || controlTribReveal[0] == duchy || controlTribReveal[0] == province || controlTribReveal[0] == gardens || controlTribReveal[0] == great_hall) 
             { //Victory Card Found
@@ -194,7 +193,7 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
             for (j = 0; j < 2; j ++) {
                 if (controlTribReveal[j] == copper || controlTribReveal[j] == silver || controlTribReveal[j] == gold) 
                 { //Treasure cards
-                    controlBonus += 2;
+                    control.coins += 2;
                 }
                 else if (controlTribReveal[j] == estate || controlTribReveal[j] == duchy || controlTribReveal[j] == province || controlTribReveal[j] == gardens || controlTribReveal[j] == great_hall) 
                 { //Victory Card Found
@@ -287,14 +286,9 @@ int checkTribute(int handPos, struct gameState *state, int currentPlayer, int ne
 
 
 
-    int zero = 0;
-    int * ptrZero = &zero;
 
-    printf("Check for return value of 0\n");
-    noAbortAssert(ptrR, ptrZero, sizeof(int));
-
-    printf("Check for bonus increase\n");
-    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+    printf("Check for coin increase\n");
+    noAbortAssert(&control.coins, &state->coins, sizeof(int));
 
     printf("Check discarded card\n");
     noAbortAssert(&control.discard[currentPlayer][ control.discardCount[currentPlayer] ], &state->discard[currentPlayer][state->discardCount[currentPlayer]], sizeof(int));
@@ -365,6 +359,9 @@ int main(){
 
         //set numBuys
         //G.numBuys = rand() % 500;
+      
+        //set coins
+        G.coins = rand() % 4;
 
         //set all players deck
         for (i = 0; i < numPlayers; i++)
