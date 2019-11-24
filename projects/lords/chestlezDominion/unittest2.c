@@ -21,20 +21,17 @@
    
 */
 
-int checkMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos, int bonus){
+int checkMinion(int choice1, int choice2, struct gameState *state, int currentPlayer, int handPos){
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
-	int controlBonus = bonus;
 
-
-	int r = playMinion(choice1, choice2, state, currentPlayer, handPos, &bonus);
-    int *ptrR = &r;
+    minionHandler(state, choice1, choice2, currentPlayer, handPos);
 
 
     if(choice1 == 1){
         //get two coins and discard minion since it has been played
-        controlBonus += 2;
+        control.coins += 2;
 
         control.discard[currentPlayer][control.discardCount[currentPlayer]] = control.hand[currentPlayer][handPos];
         control.discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
@@ -91,14 +88,9 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
     }
 
 
-    int zero = 0;
-    int * ptrZero = &zero;
 
-    printf("Check for return value of 0\n");
-    noAbortAssert(ptrR, ptrZero, sizeof(int));
-
-    printf("Check for bonus increase\n");
-    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+    printf("Check for coin increase\n");
+    noAbortAssert(&control.coins, &state->coins, sizeof(int));
 
 
     int i;
@@ -122,7 +114,6 @@ int main(){
 	int choice1, choice2, handPos, x;
     int numPlayers = 3;
     int p = 0;
-    int bonus = 0;
     int seed = 1000;
 	struct gameState G, testState;
 
@@ -162,7 +153,7 @@ int main(){
 
 
 
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
+    checkMinion(choice1, choice2, &testState, p, handPos);
 
 
 
@@ -198,7 +189,7 @@ int main(){
         testState.handCount[x] = 5;
     }
 
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
+    checkMinion(choice1, choice2, &testState, p, handPos);
 
 
 
@@ -228,7 +219,7 @@ int main(){
         testState.handCount[x] = 5;
     }
 
-    checkMinion(choice1, choice2, &testState, p, handPos, bonus);
+    checkMinion(choice1, choice2, &testState, p, handPos);
 
 
 
