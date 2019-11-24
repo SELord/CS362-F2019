@@ -667,7 +667,7 @@ void baronHandler(struct gameState *state, int choice1, int currentPlayer) {
             state->hand[currentPlayer][state->handCount[currentPlayer]] = -1;
             state->handCount[currentPlayer]--;
             card_not_discarded = 0;//Exit the loop
-          }
+          }/*
           else if (p > state->handCount[currentPlayer]){
             if(DEBUG) {
               printf("No estate cards in your hand, invalid choice\n");
@@ -676,7 +676,7 @@ void baronHandler(struct gameState *state, int choice1, int currentPlayer) {
             if (supplyCount(estate, state) > 0){
               baronGainEstate(state, currentPlayer);
             }
-          }
+          }*/
 
           else{
             p++;//Next card
