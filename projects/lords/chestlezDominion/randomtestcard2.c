@@ -24,16 +24,13 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
 	struct gameState control;
 	memcpy (&control, state, sizeof(struct gameState));
 
-	int controlBonus = bonus;
 
-
-	int r = playMinion(choice1, choice2, state, currentPlayer, handPos, &bonus);
-    int *ptrR = &r;
+	minionHandler(state, choice1, choice2, currentPlayer, handPos);
 
 
     if(choice1 == 1){
         //get two coins and discard minion since it has been played
-        controlBonus += 2;
+        control.coins += 2;
 
         control.discard[currentPlayer][control.discardCount[currentPlayer]] = control.hand[currentPlayer][handPos];
         control.discardCount[currentPlayer]++;  //increment the count of cards in players discard pile
@@ -96,14 +93,9 @@ int checkMinion(int choice1, int choice2, struct gameState *state, int currentPl
     }
 
 
-    int zero = 0;
-    int * ptrZero = &zero;
 
-    printf("Check for return value of 0\n");
-    noAbortAssert(ptrR, ptrZero, sizeof(int));
-
-    printf("Check for bonus increase\n");
-    noAbortAssert(&controlBonus, &bonus, sizeof(int));
+    printf("Check for coin increase\n");
+    noAbortAssert(&control.coins, &state->coins, sizeof(int));
 
 
     int i;
@@ -167,6 +159,12 @@ int main(){
 
         //set numBuys
         G.numBuys = rand() % 500;
+
+        //set coins
+        G.coins = rand();
+
+        //set playedCardCount
+        G.playedCardCount = rand() % 500;
 
         //set all players deck
         for (i = 0; i < numPlayers; i++)
