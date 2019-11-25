@@ -79,6 +79,10 @@ randomtestresults: randomtestcard1 randomtestcard2 randomtestcard3
 	cat dominion.c.gcov >> randomtestresults.out 2>&1
 
 
+alltests: unittestresults randomtestresults
+
+
+
 interface.o: interface.c interface.h
 	gcc -c interface.c -g  $(CFLAGS)
 
