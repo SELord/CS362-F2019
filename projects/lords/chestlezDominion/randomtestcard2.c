@@ -140,7 +140,7 @@ int main(){
         randomDeckCount = (rand() % (MAX_DECK+1));
         randomHandCount = (rand() % (MAX_HAND+1));
         randomDiscardCount = randomDeckCount - (rand() % ((MAX_DECK/2)+1));
-        randomHandPos = (rand() % randomHandCount+1);
+        randomHandPos = (rand() % (randomHandCount+1));
 
         //random game state
         for (i = 0; i < sizeof(struct gameState); i++) {
@@ -164,7 +164,7 @@ int main(){
         G.coins = rand();
 
         //set playedCardCount
-        G.playedCardCount = rand() % 500;
+        G.playedCardCount = 0;
 
         //set all players deck
         for (i = 0; i < numPlayers; i++)
